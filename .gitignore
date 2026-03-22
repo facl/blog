@@ -19,6 +19,7 @@ pnpm-debug.log*
 !.env.sample
 deploy/gotosocial/.env
 deploy/gotosocial/data/
+deploy/gotosocial/rss-sync-state.json
 
 # OS-specific files
 .DS_Store
