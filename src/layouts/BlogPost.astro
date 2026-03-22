@@ -4,18 +4,24 @@ import Comments from "@/components/Comment.astro";
 import Masthead from "@/components/blog/Masthead.astro";
 import TOC from "@/components/blog/TOC.astro";
 import WebMentions from "@/components/blog/webmentions/index.astro";
+import { getEntryDescription } from "@/utils/content-preview";
 
 import BaseLayout from "./Base.astro";
 
 interface Props {
-	post: CollectionEntry<"post">;
+	post: CollectionEntry<"post"> | CollectionEntry<"postEn">;
 }
 
 const { post } = Astro.props;
-const { ogImage, title, description, updatedDate, publishDate } = post.data;
+const { ogImage, title, updatedDate, publishDate } = post.data;
 const socialImage = ogImage ?? `/og-image/${post.id}.png`;
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
 const { headings } = await render(post);
+const description = getEntryDescription({
+	body: post.body,
+	description: post.data.description,
+	maxLength: 160,
+});
 ---
 
 <BaseLayout

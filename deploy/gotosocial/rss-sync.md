@@ -148,12 +148,16 @@ journalctl -u rss-sync.service -n 100 --no-pager
 - The current post format is:
 
 ```text
-New note: <title>
+<title>
+
+<note content or summary>
 
 <link>
 ```
 
-- If you want to include note descriptions too, set `RSS_SYNC_INCLUDE_DESCRIPTION=true`.
+- For modern feeds, the script prefers full RSS content automatically.
+- `RSS_SYNC_INCLUDE_DESCRIPTION=true` is mainly useful for older feeds that only expose descriptions.
+- If you don't want a leading label like `New note:`, leave `RSS_SYNC_PREFIX` empty.
 
 ## References
 

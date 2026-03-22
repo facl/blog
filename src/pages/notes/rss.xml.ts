@@ -1,5 +1,6 @@
 import { getCollection } from "astro:content";
 import { siteConfig } from "@/site.config";
+import { getEntryContentHtml, getEntryDescription } from "@/utils/content-preview";
 import rss from "@astrojs/rss";
 
 export const GET = async () => {
@@ -10,6 +11,11 @@ export const GET = async () => {
 		description: siteConfig.description,
 		site: import.meta.env.SITE,
 		items: notes.map((note) => ({
+			content: getEntryContentHtml(note.body, note.data.description),
+			description: getEntryDescription({
+				body: note.body,
+				description: note.data.description,
+			}),
 			title: note.data.title,
 			pubDate: note.data.publishDate,
 			link: `notes/${note.id}/`,

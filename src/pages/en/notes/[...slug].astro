@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 
 import Note from "@/components/note/Note.astro";
 import PageLayout from "@/layouts/Base.astro";
+import { getEntryDescription } from "@/utils/content-preview";
 import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 export const prerender = true;
 
@@ -19,9 +20,11 @@ export type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 const { note } = Astro.props;
 
 const meta = {
-	description:
-		note.data.description ||
-		`Read about my note posted on: ${note.data.publishDate.toLocaleDateString()}`,
+	description: getEntryDescription({
+		body: note.body,
+		description: note.data.description,
+		maxLength: 160,
+	}),
 	title: note.data.title,
 };
 ---

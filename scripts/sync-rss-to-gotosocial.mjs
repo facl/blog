@@ -13,7 +13,8 @@ const config = {
 	includeDescription: getBooleanEnv("RSS_SYNC_INCLUDE_DESCRIPTION", false),
 	language: process.env.RSS_SYNC_LANGUAGE || "",
 	maxPostsPerRun: Number(process.env.RSS_SYNC_MAX_POSTS || "3"),
-	prefix: process.env.RSS_SYNC_PREFIX || "New note:",
+	maxStatusLength: Number(process.env.RSS_SYNC_MAX_STATUS_LENGTH || "450"),
+	prefix: process.env.RSS_SYNC_PREFIX || "",
 	stateFile:
 		process.env.RSS_SYNC_STATE_FILE ||
 		path.resolve(process.cwd(), "deploy/gotosocial/rss-sync-state.json"),
@@ -115,6 +116,7 @@ async function fetchFeedItems(feedUrl) {
 }
 
 function parseFeedItem(block) {
+	const content = decodeXml(extractTag(block, "content:encoded") || "");
 	const title = decodeXml(extractTag(block, "title") || "Untitled");
 	const link = decodeXml(extractTag(block, "link") || "");
 	const guid = decodeXml(extractTag(block, "guid") || link);
@@ -127,6 +129,7 @@ function parseFeedItem(block) {
 	}
 
 	return {
+		content,
 		description,
 		guid,
 		id:
@@ -139,13 +142,22 @@ function parseFeedItem(block) {
 }
 
 function buildStatus(item) {
-	const parts = [`${config.prefix} ${item.title}`];
+	const link = getDisplayLink(item.link);
+	const reservedLength = link ? link.length + 2 : 0;
+	const bodyBudget = Math.max(80, config.maxStatusLength - reservedLength);
+	const body = buildStatusBody(item, bodyBudget);
+	const parts = [];
 
-	if (config.includeDescription && item.description) {
-		parts.push(item.description.trim());
+	if (body) {
+		parts.push(body);
+	} else if (item.title) {
+		parts.push(item.title.trim());
 	}
 
-	parts.push(item.link);
+	if (link) {
+		parts.push(link);
+	}
+
 	return parts.filter(Boolean).join("\n\n").trim();
 }
 
@@ -243,4 +255,78 @@ function getBooleanEnv(name, defaultValue) {
 
 function isFileMissing(error) {
 	return Boolean(error && typeof error === "object" && "code" in error && error.code === "ENOENT");
+}
+
+function buildStatusBody(item, maxLength) {
+	const contentText = htmlToPlainText(item.content);
+	const descriptionText = config.includeDescription ? htmlToPlainText(item.description) : "";
+	const preferredText = contentText || descriptionText;
+
+	if (!preferredText) {
+		return formatTitle(item.title);
+	}
+
+	const sections = [];
+	const title = (item.title || "").trim();
+
+	if (title && !startsWithSameText(preferredText, title)) {
+		sections.push(title);
+	}
+
+	const textBudget = Math.max(40, maxLength - sections.join("\n\n").length - (sections.length ? 2 : 0));
+	sections.push(truncateText(preferredText, textBudget));
+
+	return sections.filter(Boolean).join("\n\n").trim();
+}
+
+function formatTitle(title) {
+	const cleanTitle = (title || "").trim();
+
+	if (!cleanTitle) {
+		return "";
+	}
+
+	return config.prefix ? `${config.prefix.trim()} ${cleanTitle}`.trim() : cleanTitle;
+}
+
+function htmlToPlainText(value) {
+	return decodeXml(value || "")
+		.replaceAll(/<br\s*\/?>/gi, "\n")
+		.replaceAll(/<\/(p|div|li|blockquote|pre|h[1-6])>/gi, "\n")
+		.replaceAll(/<li[^>]*>/gi, "- ")
+		.replaceAll(/<[^>]+>/g, "")
+		.split(/\n{2,}/)
+		.map((paragraph) => paragraph.split("\n").map((line) => line.trim()).filter(Boolean).join(" "))
+		.filter(Boolean)
+		.join("\n\n")
+		.trim();
+}
+
+function getDisplayLink(link) {
+	try {
+		return decodeURI(link);
+	} catch {
+		return link;
+	}
+}
+
+function startsWithSameText(text, title) {
+	return normalizeText(text).startsWith(normalizeText(title));
+}
+
+function normalizeText(text) {
+	return text.replaceAll(/\s+/g, " ").trim().toLowerCase();
+}
+
+function truncateText(text, maxLength) {
+	if (!text || text.length <= maxLength) {
+		return text;
+	}
+
+	const softCutoff = Math.floor(maxLength * 0.8);
+	const tail = text.slice(0, maxLength + 1);
+	const lastWhitespace = tail.lastIndexOf(" ");
+	const cutoff = lastWhitespace > softCutoff ? lastWhitespace : maxLength;
+
+	return `${text.slice(0, cutoff).trimEnd()}…`;
 }
