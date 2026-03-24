@@ -2,6 +2,7 @@
 title: "Keeping Serv00 Alive"
 description: "How to keep Serv00 accounts and processes alive with Cloudflare Workers and Telegram"
 publishDate: "15 Dec 2024"
+draft: true
 tags: ["Serv00"]
 ---
 
