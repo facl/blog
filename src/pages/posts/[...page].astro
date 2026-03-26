@@ -26,10 +26,13 @@ interface Props {
 }
 
 const { page, uniqueTags } = Astro.props;
+const isPaginatedArchive = page.currentPage > 1;
 
 const meta = {
-	description: "点点滴滴，江河湖海",
-	title: "博客",
+	description: isPaginatedArchive
+		? `点点滴滴，江河湖海，第 ${page.currentPage} 页`
+		: "点点滴滴，江河湖海",
+	title: isPaginatedArchive ? `博客 - 第 ${page.currentPage} 页` : "博客",
 };
 
 const paginationProps = {

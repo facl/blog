@@ -20,11 +20,11 @@ interface Props {
 }
 
 const { page } = Astro.props;
+const isPaginatedArchive = page.currentPage > 1;
 
 const meta = {
-	description: "仙人掌主题",
-	// 修改：笔记
-	title: "笔记",
+	description: isPaginatedArchive ? `仙人掌主题，第 ${page.currentPage} 页` : "仙人掌主题",
+	title: isPaginatedArchive ? `笔记 - 第 ${page.currentPage} 页` : "笔记",
 };
 
 const paginationProps = {

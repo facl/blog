@@ -23,10 +23,13 @@ interface Props {
 }
 
 const { page } = Astro.props;
+const isPaginatedArchive = page.currentPage > 1;
 
 const meta = {
-	description: "Notes",
-	title: t(locale, "nav", "notes"),
+	description: isPaginatedArchive ? `Notes, page ${page.currentPage}` : "Notes",
+	title: isPaginatedArchive
+		? `${t(locale, "nav", "notes")} - Page ${page.currentPage}`
+		: t(locale, "nav", "notes"),
 };
 
 const paginationProps = {

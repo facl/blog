@@ -28,10 +28,13 @@ interface Props {
 
 const { page } = Astro.props;
 const { tag } = Astro.params;
+const isPaginatedArchive = page.currentPage > 1;
 
 const meta = {
-	description: `关于 ${tag} 的全部`,
-	title: `标签: ${tag}`,
+	description: isPaginatedArchive
+		? `关于 ${tag} 的全部，第 ${page.currentPage} 页`
+		: `关于 ${tag} 的全部`,
+	title: isPaginatedArchive ? `标签: ${tag} - 第 ${page.currentPage} 页` : `标签: ${tag}`,
 };
 
 const paginationProps = {

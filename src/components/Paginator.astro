@@ -1,5 +1,6 @@
 ---
 import type { PaginationLink } from "@/types";
+import { normalizePathname } from "@/utils/url";
 
 interface Props {
 	nextUrl?: PaginationLink;
@@ -7,29 +8,40 @@ interface Props {
 }
 
 const { nextUrl, prevUrl } = Astro.props;
+
+const withNormalizedUrl = (link?: PaginationLink) =>
+	link
+		? {
+				...link,
+				url: normalizePathname(link.url),
+			}
+		: undefined;
+
+const normalizedPrevUrl = withNormalizedUrl(prevUrl);
+const normalizedNextUrl = withNormalizedUrl(nextUrl);
 ---
 
 {
-	(prevUrl || nextUrl) && (
+	(normalizedPrevUrl || normalizedNextUrl) && (
 		<nav class="mt-8 flex items-center gap-x-4">
-			{prevUrl && (
+			{normalizedPrevUrl && (
 				<a
 					class="me-auto py-2 font-display text-xs uppercase tracking-[0.2em] text-accent underline-offset-4 transition-all duration-300 hover:underline hover:tracking-[0.25em]"
 					data-astro-prefetch
-					href={prevUrl.url}
+					href={normalizedPrevUrl.url}
 				>
-					{prevUrl.srLabel && <span class="sr-only">{prevUrl.srLabel}</span>}
-					← {prevUrl.text ? prevUrl.text : "Previous"}
+					{normalizedPrevUrl.srLabel && <span class="sr-only">{normalizedPrevUrl.srLabel}</span>}
+					← {normalizedPrevUrl.text ? normalizedPrevUrl.text : "Previous"}
 				</a>
 			)}
-			{nextUrl && (
+			{normalizedNextUrl && (
 				<a
 					class="ms-auto py-2 font-display text-xs uppercase tracking-[0.2em] text-accent underline-offset-4 transition-all duration-300 hover:underline hover:tracking-[0.25em]"
 					data-astro-prefetch
-					href={nextUrl.url}
+					href={normalizedNextUrl.url}
 				>
-					{nextUrl.srLabel && <span class="sr-only">{nextUrl.srLabel}</span>}
-					{nextUrl.text ? nextUrl.text : "Next"} →
+					{normalizedNextUrl.srLabel && <span class="sr-only">{normalizedNextUrl.srLabel}</span>}
+					{normalizedNextUrl.text ? normalizedNextUrl.text : "Next"} →
 				</a>
 			)}
 		</nav>

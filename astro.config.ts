@@ -41,7 +41,9 @@ export default defineConfig({
     }), tailwind({
         applyBaseStyles: false,
         nesting: true,
-    }), sitemap(), mdx(), robotsTxt(), webmanifest({
+    }), sitemap({
+        filter: (page) => !page.endsWith("/admin/"),
+    }), mdx(), robotsTxt(), webmanifest({
         // See: https://github.com/alextim/astro-lib/blob/main/packages/astro-webmanifest/README.md
         /**
          * required

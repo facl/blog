@@ -2,6 +2,7 @@
 import { WEBMENTION_PINGBACK, WEBMENTION_URL } from "astro:env/client";
 import { siteConfig } from "@/site.config";
 import { fediverseHandle } from "@/utils/fediverse";
+import { normalizePathname } from "@/utils/url";
 import type { SiteMeta } from "@/types";
 import "@/styles/global.css";
 
@@ -21,9 +22,9 @@ const { articleDate, description, ogImage, title } = Astro.props;
 
 const titleSeparator = "•";
 const siteTitle = `${title} ${titleSeparator} ${siteConfig.title}`;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const canonicalURL = new URL(normalizePathname(Astro.url.pathname), Astro.site);
 const socialImageURL = new URL(ogImage ? ogImage : "/arch.jpg", Astro.url).href;
----
+--- 
 
 <meta charset="utf-8" />
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />

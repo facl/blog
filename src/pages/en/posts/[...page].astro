@@ -44,10 +44,15 @@ interface Props {
 }
 
 const { page, uniqueTags } = Astro.props;
+const isPaginatedArchive = page.currentPage > 1;
 
 const meta = {
-	description: "Bits and pieces, rivers and seas",
-	title: t(locale, "nav", "posts"),
+	description: isPaginatedArchive
+		? `Bits and pieces, rivers and seas, page ${page.currentPage}`
+		: "Bits and pieces, rivers and seas",
+	title: isPaginatedArchive
+		? `${t(locale, "nav", "posts")} - Page ${page.currentPage}`
+		: t(locale, "nav", "posts"),
 };
 
 const paginationProps = {
