@@ -42,9 +42,11 @@ const paginationProps = {
 		},
 	}),
 };
+
+const hasMeting = page.data.some((note) => note.body?.includes("<meting-js"));
 ---
 
-<PageLayout meta={meta}>
+<PageLayout meta={meta} hasMeting={hasMeting}>
 	<section>
 		<div class="mb-8 flex items-center gap-4">
 			<span class="ornate-divider flex-1"></span>

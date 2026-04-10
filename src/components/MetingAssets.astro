@@ -142,106 +142,92 @@
 		</script>
 
 		<style is:global>
+			.aplayer {
+				background: hsl(var(--theme-muted)) !important;
+				border: 1px solid hsl(var(--theme-border)) !important;
+				box-shadow: 0 12px 30px rgb(0 0 0 / 0.05) !important;
+				margin: 1.5rem 0 !important;
+			}
 			:root[data-theme="dark"] .aplayer {
-				background: hsl(var(--theme-muted));
-				border: 1px solid hsl(var(--theme-border));
-				box-shadow: 0 12px 30px rgb(0 0 0 / 0.28);
+				box-shadow: 0 12px 30px rgb(0 0 0 / 0.28) !important;
 			}
 
-			:root[data-theme="dark"] .aplayer .aplayer-info {
-				border-bottom-color: hsl(var(--theme-border));
+			/* Prose resets to prevent Tailwind Typography from mangling APlayer */
+			.prose .aplayer .aplayer-list ol {
+				margin: 0 !important;
+				padding: 0 !important;
+				list-style: none !important;
+			}
+			.prose .aplayer .aplayer-list ol li::marker,
+			.prose .aplayer .aplayer-list ol li::before {
+				display: none !important;
+				content: none !important;
+			}
+			.prose .aplayer .aplayer-list ol li {
+				margin: 0 !important;
+				padding: 0 15px !important;
 			}
 
-			:root[data-theme="dark"] .aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap {
-				padding-block: 0.25rem;
+			.aplayer .aplayer-info {
+				border-bottom-color: hsl(var(--theme-border)) !important;
 			}
 
-			:root[data-theme="dark"]
-				.aplayer
-				.aplayer-info
-				.aplayer-controller
-				.aplayer-bar-wrap
-				.aplayer-bar,
-			:root[data-theme="dark"]
-				.aplayer
-				.aplayer-info
-				.aplayer-controller
-				.aplayer-volume-wrap
-				.aplayer-volume-bar-wrap {
-				background: hsl(var(--theme-border));
-				box-shadow: none;
+			.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap {
+				padding-block: 0.25rem !important;
 			}
 
-			:root[data-theme="dark"]
-				.aplayer
-				.aplayer-info
-				.aplayer-controller
-				.aplayer-bar-wrap
-				.aplayer-bar
-				.aplayer-loaded {
-				background: hsl(var(--theme-text) / 0.18);
+			.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar,
+			.aplayer .aplayer-info .aplayer-controller .aplayer-volume-wrap .aplayer-volume-bar-wrap {
+				background: hsl(var(--theme-border)) !important;
+				box-shadow: none !important;
 			}
 
-			:root[data-theme="dark"]
-				.aplayer
-				.aplayer-info
-				.aplayer-controller
-				.aplayer-bar-wrap
-				.aplayer-bar
-				.aplayer-played,
-			:root[data-theme="dark"]
-				.aplayer
-				.aplayer-info
-				.aplayer-controller
-				.aplayer-volume-wrap
-				.aplayer-volume-bar-wrap
-				.aplayer-volume-bar {
-				background: hsl(var(--theme-accent));
+			.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-loaded {
+				background: hsl(var(--theme-text) / 0.18) !important;
 			}
 
-			:root[data-theme="dark"]
-				.aplayer
-				.aplayer-info
-				.aplayer-controller
-				.aplayer-bar-wrap
-				.aplayer-bar
-				.aplayer-thumb {
-				background: hsl(var(--theme-accent));
-				box-shadow: 0 0 0 2px hsl(var(--theme-bg));
+			.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-played,
+			.aplayer .aplayer-info .aplayer-controller .aplayer-volume-wrap .aplayer-volume-bar-wrap .aplayer-volume-bar {
+				background: hsl(var(--theme-accent)) !important;
 			}
 
-			:root[data-theme="dark"] .aplayer .aplayer-info .aplayer-music .aplayer-title {
-				color: hsl(var(--theme-text));
+			.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-thumb {
+				background: hsl(var(--theme-accent)) !important;
+				box-shadow: 0 0 0 2px hsl(var(--theme-bg)) !important;
 			}
 
-			:root[data-theme="dark"] .aplayer .aplayer-info .aplayer-music .aplayer-author,
-			:root[data-theme="dark"] .aplayer .aplayer-info .aplayer-controller .aplayer-time,
-			:root[data-theme="dark"] .aplayer .aplayer-list ol li {
-				color: hsl(var(--theme-text) / 0.72);
+			.aplayer .aplayer-info .aplayer-music .aplayer-title {
+				color: hsl(var(--theme-text)) !important;
 			}
 
-			:root[data-theme="dark"] .aplayer .aplayer-icon path {
-				fill: hsl(var(--theme-text));
+			.aplayer .aplayer-info .aplayer-music .aplayer-author,
+			.aplayer .aplayer-info .aplayer-controller .aplayer-time,
+			.aplayer .aplayer-list ol li {
+				color: hsl(var(--theme-text) / 0.72) !important;
 			}
 
-			:root[data-theme="dark"] .aplayer .aplayer-icon:hover path {
-				fill: hsl(var(--theme-accent));
+			.aplayer .aplayer-icon path {
+				fill: hsl(var(--theme-text)) !important;
 			}
 
-			:root[data-theme="dark"] .aplayer .aplayer-list {
-				background: hsl(var(--theme-muted));
-				overflow-y: auto;
-				overscroll-behavior: contain;
+			.aplayer .aplayer-icon:hover path {
+				fill: hsl(var(--theme-accent)) !important;
 			}
 
-			:root[data-theme="dark"] .aplayer .aplayer-list ol li {
-				border-top-color: hsl(var(--theme-border));
+			.aplayer .aplayer-list {
+				background: hsl(var(--theme-muted)) !important;
+				overflow-y: auto !important;
+				overscroll-behavior: contain !important;
 			}
 
-			:root[data-theme="dark"] .aplayer .aplayer-list ol li:hover,
-			:root[data-theme="dark"] .aplayer .aplayer-list ol li.aplayer-list-light {
-				background: hsl(var(--theme-bg) / 0.9);
-				color: hsl(var(--theme-text));
+			.aplayer .aplayer-list ol li {
+				border-top-color: hsl(var(--theme-border)) !important;
+			}
+
+			.aplayer .aplayer-list ol li:hover,
+			.aplayer .aplayer-list ol li.aplayer-list-light {
+				background: hsl(var(--theme-bg) / 0.9) !important;
+				color: hsl(var(--theme-text)) !important;
 			}
 
 			/* Hide the lyric panel to avoid the extra gradient strip in article embeds. */
