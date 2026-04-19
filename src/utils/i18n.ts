@@ -18,6 +18,7 @@ export const translations = {
             about: "关于",
             posts: "博客",
             notes: "笔记",
+            links: "外链",
         },
         // 首页
         home: {
@@ -58,6 +59,7 @@ export const translations = {
             about: "About",
             posts: "Blog",
             notes: "Notes",
+            links: "Referrers",
         },
         home: {
             recentPosts: "Recent Posts",
@@ -149,5 +151,6 @@ export function getMenuLinks(locale: Locale) {
         { path: `${prefix}/about/`, title: trans.about },
         { path: `${prefix}/posts/`, title: trans.posts },
         { path: `${prefix}/notes/`, title: trans.notes },
+        { path: `${prefix}/link/`, title: trans.links },
     ];
 }

@@ -1,0 +1,74 @@
+---
+import PageLayout from "@/layouts/Base.astro";
+import { getTopReferrers } from "@/utils/kv";
+
+const meta = {
+	description: "外链来源统计",
+	title: "外链来源",
+};
+
+const referrers = await getTopReferrers(3, 15);
+const maxCount = referrers.length > 0 ? referrers[0]?.count ?? 1 : 1;
+---
+
+<PageLayout meta={meta}>
+	<div class="mx-auto max-w-4xl w-full">
+		<header class="mb-12">
+			<div class="mb-8 flex items-center gap-4">
+				<span class="ornate-divider flex-1"></span>
+				<span class="font-display text-sm font-medium uppercase tracking-[0.25em] text-accent engraved">
+					外链来源
+				</span>
+				<span class="ornate-divider flex-1"></span>
+			</div>
+			<p class="text-center font-body text-sm tracking-wide text-textColor/70">
+				那些把人们带到这里的远方站点，按来访次数从高到低排列。
+			</p>
+		</header>
+
+		{referrers.length === 0 ? (
+			<div class="text-center py-16">
+				<p class="font-body text-mutedFg text-lg">暂无外链来源数据</p>
+				<p class="font-body text-mutedFg text-sm mt-2">数据会随着访客的到来逐渐积累</p>
+			</div>
+		) : (
+			<ol class="space-y-0" role="list">
+				{referrers.map((entry, index) => {
+					const barWidth = Math.max(8, (entry.count / maxCount) * 100);
+					const rank = index + 1;
+					return (
+						<li class="group border-b border-border py-4 transition-colors duration-300 hover:border-accent/30 last:border-0">
+							<div class="flex items-center gap-4">
+								<span class="font-display text-sm text-mutedFg w-6 text-right tabular-nums">
+									{rank}
+								</span>
+								<div class="flex-1 min-w-0">
+									<div class="flex items-baseline justify-between gap-3 mb-1.5">
+										<span class="font-heading text-base text-accent-2 truncate">
+											{entry.domain}
+										</span>
+										<span class="font-mono text-sm text-mutedFg tabular-nums shrink-0">
+											{entry.count} 次
+										</span>
+									</div>
+									<div class="h-1.5 bg-bgAlt rounded-sm overflow-hidden">
+										<div
+											class="h-full rounded-sm transition-all duration-500 ease-out group-hover:opacity-90"
+											style={`width: ${barWidth}%; background: linear-gradient(90deg, var(--academia-brass-dark), var(--academia-brass));`}
+										></div>
+									</div>
+								</div>
+							</div>
+						</li>
+					);
+				})}
+			</ol>
+		)}
+
+		<div class="mt-12 text-center">
+			<p class="font-body text-xs text-mutedFg/60">
+				低于 3 次的来源不予显示 · 最多展示 15 条
+			</p>
+		</div>
+	</div>
+</PageLayout>

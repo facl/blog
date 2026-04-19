@@ -4,3 +4,10 @@ declare module "@pagefind/default-ui" {
 	}
 }
 
+declare namespace App {
+	interface Locals {
+		referrer?: string;
+		targetPath?: string;
+	}
+}
+
