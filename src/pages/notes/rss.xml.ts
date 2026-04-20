@@ -8,12 +8,9 @@ export const GET = async () => {
 	const notes = await getAllNotes();
 	const sortedNotes = [...notes].sort(collectionDateSort);
 
-	return rss({
-		title: siteConfig.title,
-		description: siteConfig.description,
-		site: import.meta.env.SITE,
-		items: sortedNotes.map((note) => ({
-			content: getEntryContentHtml(note.body ?? "", note.data.description),
+	const items = await Promise.all(
+		sortedNotes.map(async (note) => ({
+			content: await getEntryContentHtml(note.body ?? "", note.data.description),
 			description: getEntryDescription({
 				body: note.body ?? "",
 				description: note.data.description,
@@ -21,6 +18,13 @@ export const GET = async () => {
 			title: note.data.title,
 			pubDate: note.data.publishDate,
 			link: `notes/${note.id}/`,
-		})),
+		}))
+	);
+
+	return rss({
+		title: siteConfig.title,
+		description: siteConfig.description,
+		site: import.meta.env.SITE,
+		items,
 	});
 };

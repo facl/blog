@@ -18,7 +18,7 @@ export const translations = {
             about: "关于",
             posts: "博客",
             notes: "笔记",
-            links: "外链",
+            feed: "订阅",
         },
         // 首页
         home: {
@@ -59,7 +59,7 @@ export const translations = {
             about: "About",
             posts: "Blog",
             notes: "Notes",
-            links: "Referrers",
+            feed: "Feed",
         },
         home: {
             recentPosts: "Recent Posts",

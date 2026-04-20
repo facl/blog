@@ -23,19 +23,17 @@ export function getEntryDescription({
 	return truncateText(collapseWhitespace(text), maxLength);
 }
 
-export function getEntryContentHtml(body: string, description?: string) {
-	const text = markdownToPlainText(body) || normalizeDescription(description);
+import { renderMarkdown } from "@/utils/markdown";
 
-	if (!text) {
-		return "";
+export async function getEntryContentHtml(body: string, description?: string) {
+	if (!body || !body.trim()) {
+		const desc = normalizeDescription(description);
+		return desc ? `<p>${escapeHtml(desc)}</p>` : "";
 	}
 
-	return text
-		.split(/\n{2,}/)
-		.map((paragraph) => paragraph.trim())
-		.filter(Boolean)
-		.map((paragraph) => `<p>${escapeHtml(paragraph).replaceAll("\n", "<br />")}</p>`)
-		.join("\n");
+	// 使用 Markdown 渲染生成 HTML，保留格式
+	const html = await renderMarkdown(body);
+	return html;
 }
 
 export function markdownToPlainText(markdown: string) {
