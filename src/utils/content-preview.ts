@@ -1,3 +1,5 @@
+import { renderMarkdown } from "@/utils/markdown";
+
 const PLACEHOLDER_DESCRIPTIONS = new Set([
 	"",
 	"null",
@@ -23,7 +25,41 @@ export function getEntryDescription({
 	return truncateText(collapseWhitespace(text), maxLength);
 }
 
-import { renderMarkdown } from "@/utils/markdown";
+export async function getEntryDescriptionHtml(
+	body: string,
+	description?: string,
+	maxLength = 600,
+) {
+	if (!body || !body.trim()) {
+		const desc = normalizeDescription(description);
+		return desc ? `<p>${escapeHtml(desc)}</p>` : "";
+	}
+
+	const html = await renderMarkdown(body);
+	const firstImgMatch = html.match(/<img\s[^>]*src="([^"]+)"[^>]*>/i);
+	const firstImg = firstImgMatch ? firstImgMatch[0] : "";
+
+	const textOnly = markdownToPlainText(body);
+	const truncated = truncateText(collapseWhitespace(textOnly), maxLength);
+
+	if (firstImg) {
+		return `${firstImg}<p>${escapeHtml(truncated)}</p>`;
+	}
+	return `<p>${escapeHtml(truncated)}</p>`;
+}
+
+export function extractFirstImageUrl(html: string): string | undefined {
+	const match = html.match(/<img\s[^>]*src="([^"]+)"[^>]*>/i);
+	return match?.[1];
+}
+
+export function guessImageType(url: string): string {
+	const lower = url.toLowerCase();
+	if (lower.includes(".png")) return "image/png";
+	if (lower.includes(".gif")) return "image/gif";
+	if (lower.includes(".webp")) return "image/webp";
+	return "image/jpeg";
+}
 
 export async function getEntryContentHtml(body: string, description?: string) {
 	if (!body || !body.trim()) {
@@ -31,7 +67,6 @@ export async function getEntryContentHtml(body: string, description?: string) {
 		return desc ? `<p>${escapeHtml(desc)}</p>` : "";
 	}
 
-	// 使用 Markdown 渲染生成 HTML，保留格式
 	const html = await renderMarkdown(body);
 	return html;
 }
